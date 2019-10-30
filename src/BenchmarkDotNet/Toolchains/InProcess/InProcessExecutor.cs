@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Extensions;
@@ -80,7 +80,7 @@ namespace BenchmarkDotNet.Toolchains.InProcess
                     $"Benchmark {executeParameters.BenchmarkCase.DisplayInfo} takes to long to run. " +
                     "Prefer to use out-of-process toolchains for long-running benchmarks.");
 
-            return GetExecutionResult(host.RunResults, exitCode, executeParameters.Logger, executeParameters.BenchmarkCase.Config.Encoding);
+            return GetExecutionResult(host.RunResults, exitCode, executeParameters.Logger, executeParameters.BenchmarkCase.Config.FormatStyle);
         }
 
         private int ExecuteCore(IHost host, ExecuteParameters parameters)
@@ -123,7 +123,7 @@ namespace BenchmarkDotNet.Toolchains.InProcess
             return exitCode;
         }
 
-        private ExecuteResult GetExecutionResult(RunResults runResults, int exitCode, ILogger logger, Encoding encoding)
+        private ExecuteResult GetExecutionResult(RunResults runResults, int exitCode, ILogger logger, FormatStyle formatStyle)
         {
             if (exitCode != 0)
             {

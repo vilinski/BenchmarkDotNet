@@ -1,52 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Reports;
+using JetBrains.Annotations;
 
 namespace BenchmarkDotNet.Extensions
 {
     internal static class CommonExtensions
     {
         public static string ToTimeStr(this double value, TimeUnit unit = null, int unitNameWidth = 1, bool showUnit = true, string format = "N4",
-            Encoding encoding = null)
+            [CanBeNull] FormatStyle formatStyle = null)
         {
+            formatStyle = formatStyle ?? FormatStyle.DefaultStyle;
             unit = unit ?? TimeUnit.GetBestTimeUnit(value);
             double unitValue = TimeUnit.Convert(value, TimeUnit.Nanosecond, unit);
             if (showUnit)
             {
-                string unitName = unit.Name.ToString(encoding ?? Encoding.ASCII).PadLeft(unitNameWidth);
-                return $"{unitValue.ToStr(format)} {unitName}";
+                string unitName = unit.Name.ToString(formatStyle).PadLeft(unitNameWidth);
+                return $"{unitValue.ToStr(formatStyle, format)} {unitName}";
             }
 
-            return $"{unitValue.ToStr(format)}";
+            return $"{unitValue.ToStr(formatStyle, format)}";
         }
 
-        public static string ToTimeStr(this double value, TimeUnit unit, Encoding encoding, string format = "N4", int unitNameWidth = 1, bool showUnit = true)
-            => value.ToTimeStr(unit, unitNameWidth, showUnit, format, encoding);
+        public static string ToTimeStr(this double value, TimeUnit unit, [CanBeNull] FormatStyle formatStyle, string format = "N4", int unitNameWidth = 1, bool showUnit = true)
+            => value.ToTimeStr(unit, unitNameWidth, showUnit, format, formatStyle);
 
-        public static string ToTimeStr(this double value, Encoding encoding, TimeUnit unit = null, string format = "N4", int unitNameWidth = 1,
+        public static string ToTimeStr(this double value, [CanBeNull] FormatStyle formatStyle, TimeUnit unit = null, string format = "N4", int unitNameWidth = 1,
             bool showUnit = true)
-            => value.ToTimeStr(unit, unitNameWidth, showUnit, format, encoding);
+            => value.ToTimeStr(unit, unitNameWidth, showUnit, format, formatStyle);
 
-        public static string ToSizeStr(this long value, SizeUnit unit = null, int unitNameWidth = 1, bool showUnit = true)
+        public static string ToSizeStr(this long value, [CanBeNull] FormatStyle formatStyle, SizeUnit unit = null, int unitNameWidth = 1, bool showUnit = true)
+            => value.ToSizeStr(formatStyle?.CultureInfo ?? FormatStyle.DefaultStyle.CultureInfo, unit, unitNameWidth, showUnit);
+
+        public static string ToSizeStr(this long value, CultureInfo cultureInfo, SizeUnit unit = null, int unitNameWidth = 1, bool showUnit = true)
         {
             unit = unit ?? SizeUnit.GetBestSizeUnit(value);
             double unitValue = SizeUnit.Convert(value, SizeUnit.B, unit);
             if (showUnit)
             {
                 string unitName = unit.Name.PadLeft(unitNameWidth);
-                return string.Format(HostEnvironmentInfo.MainCultureInfo, "{0:0.##} {1}", unitValue, unitName);
+                return string.Format(cultureInfo, "{0:0.##} {1}", unitValue, unitName);
             }
 
-            return string.Format(HostEnvironmentInfo.MainCultureInfo, "{0:0.##}", unitValue);
+            return string.Format(cultureInfo, "{0:0.##}", unitValue);
         }
 
-        public static string ToStr(this double value, string format = "0.##")
+        public static string ToStr(this double value, [CanBeNull] FormatStyle formatStyle, string format = "0.##")
+            => value.ToStr(formatStyle?.CultureInfo ?? FormatStyle.DefaultStyle.CultureInfo, format);
+
+        public static string ToStr(this double value, CultureInfo cultureInfo, string format = "0.##")
         {
             // Here we should manually create an object[] for string.Format
             // If we write something like
@@ -56,7 +66,7 @@ namespace BenchmarkDotNet.Extensions
             //     string.Format(System.IFormatProvider, string, object)          // .NET 4.6
             // Unfortunately, Mono doesn't have the second overload (with object instead of params object[]).
             var args = new object[] { value };
-            return string.Format(HostEnvironmentInfo.MainCultureInfo, $"{{0:{format}}}", args);
+            return string.Format(cultureInfo, $"{{0:{format}}}", args);
         }
 
         /// <summary>

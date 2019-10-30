@@ -37,11 +37,8 @@ namespace BenchmarkDotNet.Configs
         /// the default value is "./BenchmarkDotNet.Artifacts"
         /// </summary>
         string ArtifactsPath { get; }
-
-        /// <summary>
-        /// the default value is ASCII
-        /// </summary>
-        Encoding Encoding { get; }
+        
+        FormatStyle FormatStyle { get; }
 
         /// <summary>
         /// a set of custom flags that can enable/disable various settings

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using JetBrains.Annotations;
 
 namespace BenchmarkDotNet.Helpers
@@ -46,11 +47,11 @@ namespace BenchmarkDotNet.Helpers
                                                              _ => _.Value);
         }
 
-        public override string ToString() => GetString(Encoding.ASCII);
+        public override string ToString() => GetString(FormatStyle.DefaultStyle);
 
-        public string ToString(Encoding encoding) => GetStringByEncoding(encoding);
+        public string ToString(FormatStyle formatStyle) => GetStringByEncoding(formatStyle);
 
-        [PublicAPI] public string GetString(Encoding encoding) => GetStringByEncoding(encoding);
+        [PublicAPI] public string GetString(FormatStyle formatStyle) => GetStringByEncoding(formatStyle);
 
         public static implicit operator MultiEncodingString(string s) => new MultiEncodingString(s);
 
@@ -74,19 +75,19 @@ namespace BenchmarkDotNet.Helpers
                                  => current ^ encodedString.Key.GetHashCode() + encodedString.Value.GetHashCode());
         }
 
-        private string GetStringByEncoding(Encoding encoding)
+        private string GetStringByEncoding([CanBeNull] FormatStyle formatStyle)
         {
-            if (encoding == null)
-                encoding = GetFallback();
+            if (formatStyle == null)
+                formatStyle = GetFallback();
 
-            if (encodedStrings.TryGetValue(encoding.EncodingName, out string encodedString))
+            if (encodedStrings.TryGetValue(formatStyle.Encoding.EncodingName, out string encodedString))
                 return encodedString;
 
-            return encodedStrings.TryGetValue(GetFallback().EncodingName, out encodedString)
+            return encodedStrings.TryGetValue(GetFallback().Encoding.EncodingName, out encodedString)
                 ? encodedString
                 : null;
         }
 
-        private static Encoding GetFallback() => Encoding.ASCII;
+        private static FormatStyle GetFallback() => FormatStyle.DefaultStyle;
     }
 }

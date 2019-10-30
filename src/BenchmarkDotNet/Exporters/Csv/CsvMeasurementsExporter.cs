@@ -69,10 +69,10 @@ namespace BenchmarkDotNet.Exporters.Csv
 
             var columns = new List<MeasurementColumn>(Columns.Value)
             {
-                new MeasurementColumn("Gen_0", (_, report, __) => report.GcStats.Gen0Collections.ToString()),
-                new MeasurementColumn("Gen_1", (_, report, __) => report.GcStats.Gen1Collections.ToString()),
-                new MeasurementColumn("Gen_2", (_, report, __) => report.GcStats.Gen2Collections.ToString()),
-                new MeasurementColumn("Allocated_Bytes", (_, report, __) => report.GcStats.BytesAllocatedPerOperation.ToString())
+                new MeasurementColumn("Gen_0", (_, report, __) => report.GcStats.Gen0Collections.ToString(summary.Style.CultureInfo)),
+                new MeasurementColumn("Gen_1", (_, report, __) => report.GcStats.Gen1Collections.ToString(summary.Style.CultureInfo)),
+                new MeasurementColumn("Gen_2", (_, report, __) => report.GcStats.Gen2Collections.ToString(summary.Style.CultureInfo)),
+                new MeasurementColumn("Allocated_Bytes", (_, report, __) => report.GcStats.BytesAllocatedPerOperation.ToString(summary.Style.CultureInfo))
             };
 
             return columns.ToArray();
@@ -102,9 +102,9 @@ namespace BenchmarkDotNet.Exporters.Csv
             columns.Add(new MeasurementColumn("Measurement_IterationMode", (summary, report, m) => m.IterationMode.ToString()));
             columns.Add(new MeasurementColumn("Measurement_IterationStage", (summary, report, m) => m.IterationStage.ToString()));
             columns.Add(new MeasurementColumn("Measurement_IterationIndex", (summary, report, m) => m.IterationIndex.ToString()));
-            columns.Add(new MeasurementColumn("Measurement_Nanoseconds", (summary, report, m) => m.Nanoseconds.ToStr()));
+            columns.Add(new MeasurementColumn("Measurement_Nanoseconds", (summary, report, m) => m.Nanoseconds.ToStr(summary.Style.FormatStyle)));
             columns.Add(new MeasurementColumn("Measurement_Operations", (summary, report, m) => m.Operations.ToString()));
-            columns.Add(new MeasurementColumn("Measurement_Value", (summary, report, m) => (m.Nanoseconds / m.Operations).ToStr()));
+            columns.Add(new MeasurementColumn("Measurement_Value", (summary, report, m) => (m.Nanoseconds / m.Operations).ToStr(summary.Style.FormatStyle)));
 
             return columns.ToArray();
         }

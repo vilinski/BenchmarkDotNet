@@ -152,7 +152,7 @@ namespace BenchmarkDotNet.Running
                             throw new InvalidOperationException("An iteration with 'Operations == 0' detected");
                         reports.Add(report);
                         if (report.GetResultRuns().Any())
-                            logger.WriteLineStatistic(report.GetResultRuns().GetStatistics().ToTimeStr(config.Encoding));
+                            logger.WriteLineStatistic(report.GetResultRuns().GetStatistics().ToTimeStr(config.FormatStyle));
 
                         if (!report.Success && config.Options.IsSet(ConfigOptions.StopOnFirstError))
                             break;
@@ -184,6 +184,7 @@ namespace BenchmarkDotNet.Running
                 resultsFolderPath,
                 logFilePath,
                 clockSpan.GetTimeSpan(),
+                config.FormatStyle,
                 Validate(new[] {benchmarkRunInfo }, NullLogger.Instance)); // validate them once again, but don't print the output
         }
 
@@ -222,14 +223,14 @@ namespace BenchmarkDotNet.Running
                 if (columnWithLegends.Any())
                     maxNameWidth = Math.Max(maxNameWidth, columnWithLegends.Select(c => c.ColumnName.Length).Max());
                 if (effectiveTimeUnit != null)
-                    maxNameWidth = Math.Max(maxNameWidth, effectiveTimeUnit.Name.ToString(config.Encoding).Length + 2);
+                    maxNameWidth = Math.Max(maxNameWidth, effectiveTimeUnit.Name.ToString(config.FormatStyle).Length + 2);
 
                 foreach (var column in columnWithLegends)
                     logger.WriteLineHint($"  {column.ColumnName.PadRight(maxNameWidth, ' ')} : {column.Legend}");
 
                 if (effectiveTimeUnit != null)
                     logger.WriteLineHint($"  {("1 " + effectiveTimeUnit.Name).PadRight(maxNameWidth, ' ')} :" +
-                                         $" 1 {effectiveTimeUnit.Description} ({TimeUnit.Convert(1, effectiveTimeUnit, TimeUnit.Second).ToStr("0.#########")} sec)");
+                                         $" 1 {effectiveTimeUnit.Description} ({TimeUnit.Convert(1, effectiveTimeUnit, TimeUnit.Second).ToStr(summary.Style.FormatStyle, "0.#########")} sec)");
             }
 
             if (config.GetDiagnosers().Any())
@@ -268,7 +269,7 @@ namespace BenchmarkDotNet.Running
                 .Select(buildPartition => (buildPartition, buildResult: Build(buildPartition, rootArtifactsFolderPath, buildLogger)))
                 .ToDictionary(result => result.buildPartition, result => result.buildResult);
 
-            logger.WriteLineHeader($"// ***** Done, took {globalChronometer.GetElapsed().GetTimeSpan().ToFormattedTotalTime()}   *****");
+            logger.WriteLineHeader($"// ***** Done, took {globalChronometer.GetElapsed().GetTimeSpan().ToFormattedTotalTime(FormatStyle.DefaultStyle)}   *****");
 
             if (buildPartitions.Length <= 1 || !buildResults.Values.Any(result => result.IsGenerateSuccess && !result.IsBuildSuccess))
                 return buildResults;
@@ -279,7 +280,7 @@ namespace BenchmarkDotNet.Running
                 if (buildResults[buildPartition].IsGenerateSuccess && !buildResults[buildPartition].IsBuildSuccess && !buildResults[buildPartition].TryToExplainFailureReason(out var reason))
                     buildResults[buildPartition] = Build(buildPartition, rootArtifactsFolderPath, buildLogger);
 
-            logger.WriteLineHeader($"// ***** Done, took {globalChronometer.GetElapsed().GetTimeSpan().ToFormattedTotalTime()}   *****");
+            logger.WriteLineHeader($"// ***** Done, took {globalChronometer.GetElapsed().GetTimeSpan().ToFormattedTotalTime(FormatStyle.DefaultStyle)}   *****");
 
             return buildResults;
         }
@@ -491,7 +492,7 @@ namespace BenchmarkDotNet.Running
         }
 
         private static void LogTotalTime(ILogger logger, TimeSpan time, int executedBenchmarksCount, string message = "Total time")
-            => logger.WriteLineStatistic($"{message}: {time.ToFormattedTotalTime()}, executed benchmarks: {executedBenchmarksCount}");
+            => logger.WriteLineStatistic($"{message}: {time.ToFormattedTotalTime(FormatStyle.DefaultStyle)}, executed benchmarks: {executedBenchmarksCount}");
 
         private static BenchmarkRunInfo[] GetSupportedBenchmarks(BenchmarkRunInfo[] benchmarkRunInfos, ILogger logger, IResolver resolver)
             => benchmarkRunInfos.Select(info => new BenchmarkRunInfo(

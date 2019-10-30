@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Extensions;
 using JetBrains.Annotations;
@@ -21,8 +22,8 @@ namespace BenchmarkDotNet.Reports
         public static double GetAverageNanoseconds(this Measurement report) =>
             report.Nanoseconds / report.Operations;
 
-        public static string ToStr(this Measurement run, Encoding encoding = null) =>
-            $"{run.IterationMode}{run.IterationStage} {run.IterationIndex}: {run.Operations} op, {run.Nanoseconds.ToStr()} ns, {run.GetAverageNanoseconds().ToTimeStr(encoding ?? Encoding.ASCII)}/op";
+        public static string ToStr(this Measurement run, [CanBeNull] FormatStyle formatStyle = null) =>
+            $"{run.IterationMode}{run.IterationStage} {run.IterationIndex}: {run.Operations} op, {run.Nanoseconds.ToStr(formatStyle)} ns, {run.GetAverageNanoseconds().ToTimeStr(formatStyle)}/op";
 
         public static bool Is(this Measurement measurement, IterationMode mode, IterationStage stage)
             => measurement.IterationMode == mode && measurement.IterationStage == stage;

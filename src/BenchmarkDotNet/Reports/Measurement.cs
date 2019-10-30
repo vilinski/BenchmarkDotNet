@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Engines;
 using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Extensions;
@@ -14,7 +15,7 @@ namespace BenchmarkDotNet.Reports
     /// </summary>
     public struct Measurement : IComparable<Measurement>
     {
-        private static Measurement Error (Encoding encoding) => new Measurement(-1, IterationMode.Unknown, IterationStage.Unknown, 0, 0, 0, encoding);
+        private static Measurement Error(FormatStyle formatStyle) => new Measurement(-1, IterationMode.Unknown, IterationStage.Unknown, 0, 0, 0, formatStyle);
 
         private static readonly int IterationInfoNameMaxWidth
             = Enum.GetNames(typeof(IterationMode)).Max(text => text.Length) + Enum.GetNames(typeof(IterationStage)).Max(text => text.Length);
@@ -28,7 +29,7 @@ namespace BenchmarkDotNet.Reports
         public int IterationIndex { get; }
 
         [PublicAPI]
-        public Encoding Encoding { get; }
+        public FormatStyle FormatStyle { get; }
 
         /// <summary>
         /// Gets the number of operations performed.
@@ -50,9 +51,9 @@ namespace BenchmarkDotNet.Reports
         /// <param name="operations">The number of operations performed.</param>
         /// <param name="nanoseconds">The total number of nanoseconds it took to perform all operations.</param>
         /// <param name="encoding">encoding to display value.</param>
-        public Measurement(int launchIndex, IterationMode iterationMode, IterationStage iterationStage, int iterationIndex, long operations, double nanoseconds, Encoding encoding = null)
+        public Measurement(int launchIndex, IterationMode iterationMode, IterationStage iterationStage, int iterationIndex, long operations, double nanoseconds, FormatStyle formatStyle = null)
         {
-            Encoding = encoding;
+            FormatStyle = formatStyle;
             Operations = operations;
             Nanoseconds = nanoseconds;
             LaunchIndex = launchIndex;
@@ -72,8 +73,8 @@ namespace BenchmarkDotNet.Reports
             return $"{alignedIterationInfo} {alignedIterationIndex}: {GetDisplayValue()}";
         }
 
-        private string GetDisplayValue() => $"{Operations} op, {Nanoseconds.ToStr("0.00")} ns, {GetAverageTime()}";
-        private string GetAverageTime() => $"{(Nanoseconds / Operations).ToTimeStr(Encoding)}/op";
+        private string GetDisplayValue() => $"{Operations} op, {Nanoseconds.ToStr(FormatStyle, "0.00")} ns, {GetAverageTime()}";
+        private string GetAverageTime() => $"{(Nanoseconds / Operations).ToTimeStr(FormatStyle)}/op";
 
         /// <summary>
         /// Parses the benchmark statistics from the plain text line.
@@ -88,15 +89,15 @@ namespace BenchmarkDotNet.Reports
         /// <param name="logger">The logger to write any diagnostic messages to.</param>
         /// <param name="line">The line to parse.</param>
         /// <param name="processIndex"></param>
-        /// <param name="encoding">encoding to display value</param>
+        /// <param name="formatStyle">The rules of formatting</param>
         /// <returns>An instance of <see cref="Measurement"/> if parsed successfully. <c>Null</c> in case of any trouble.</returns>
-        public static Measurement Parse(ILogger logger, string line, int processIndex, Encoding encoding = null)
+        public static Measurement Parse(ILogger logger, string line, int processIndex, FormatStyle formatStyle = null)
         {
-            if (encoding == null)
-                encoding = Encoding.ASCII;
+            if (formatStyle == null)
+                formatStyle = FormatStyle.DefaultStyle;
 
             if (line == null || line.StartsWith(GcStats.ResultsLinePrefix))
-                return Error(encoding);
+                return Error(formatStyle);
 
             try
             {
@@ -139,7 +140,7 @@ namespace BenchmarkDotNet.Reports
                             break;
                     }
                 }
-                return new Measurement(processIndex, iterationMode, iterationStage, iterationIndex, op, ns, encoding);
+                return new Measurement(processIndex, iterationMode, iterationStage, iterationIndex, op, ns, formatStyle);
             }
             catch (Exception)
             {
@@ -147,7 +148,7 @@ namespace BenchmarkDotNet.Reports
                 logger.WriteLineError("Parse error in the following line:");
                 logger.WriteLineError(line);
 #endif
-                return Error(encoding);
+                return Error(formatStyle);
             }
         }
 
@@ -157,6 +158,6 @@ namespace BenchmarkDotNet.Reports
 
         public int CompareTo(Measurement other) => Nanoseconds.CompareTo(other.Nanoseconds);
 
-        public override string ToString() => $"#{LaunchIndex}/{IterationMode} {IterationIndex}: {Operations} op, {Nanoseconds.ToTimeStr(Encoding)}";
+        public override string ToString() => $"#{LaunchIndex}/{IterationMode} {IterationIndex}: {Operations} op, {Nanoseconds.ToTimeStr(FormatStyle)}";
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Extensions;
 using BenchmarkDotNet.Horology;
 using JetBrains.Annotations;
@@ -18,21 +19,21 @@ namespace BenchmarkDotNet.Mathematics.Histograms
         public static IEnumerable<double> GetAllValues([NotNull] this Histogram histogram) => histogram.Bins.SelectMany(bin => bin.Values);
 
         [PublicAPI, Pure]
-        public static string ToTimeStr(this Histogram histogram, TimeUnit unit = null, char binSymbol = '@', bool full = false, Encoding encoding = null, string format = "0.000")
+        public static string ToTimeStr(this Histogram histogram, TimeUnit unit = null, char binSymbol = '@', bool full = false, FormatStyle formatStyle = null, string format = "0.000")
         {
             var bins = histogram.Bins;
             int binCount = histogram.Bins.Length;
             if (unit == null)
                 unit = TimeUnit.GetBestTimeUnit(bins.SelectMany(bin => bin.Values).ToArray());
-            if (encoding == null)
-                encoding = Encoding.ASCII;
+            if (formatStyle == null)
+                formatStyle = FormatStyle.DefaultStyle;
 
             var lower = new string[binCount];
             var upper = new string[binCount];
             for (int i = 0; i < binCount; i++)
             {
-                lower[i] = bins[i].Lower.ToTimeStr(unit, encoding, format);
-                upper[i] = bins[i].Upper.ToTimeStr(unit, encoding, format);
+                lower[i] = bins[i].Lower.ToTimeStr(unit, formatStyle, format);
+                upper[i] = bins[i].Upper.ToTimeStr(unit, formatStyle, format);
             }
 
             int lowerWidth = lower.Max(it => it.Length);
@@ -43,7 +44,7 @@ namespace BenchmarkDotNet.Mathematics.Histograms
             {
                 string intervalStr = $"[{lower[i].PadLeft(lowerWidth)} ; {upper[i].PadLeft(upperWidth)})";
                 string barStr = full
-                    ? string.Join(", ", bins[i].Values.Select(it => it.ToTimeStr(unit, encoding, format)))
+                    ? string.Join(", ", bins[i].Values.Select(it => it.ToTimeStr(unit, formatStyle, format)))
                     : new string(binSymbol, bins[i].Count);
                 builder.AppendLine($"{intervalStr} | {barStr}");
             }

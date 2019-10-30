@@ -45,10 +45,11 @@ namespace BenchmarkDotNet.Columns
         {
             double mean = isBaseline ? 1 : Statistics.DivMean(current, baseline);
 
+            var formatStyle = summary.Style.FormatStyle;
             switch (Kind)
             {
                 case ScaledKind.Mean:
-                    return IsNonBaselinesPrecise(summary, baseline, benchmarkCase) ? mean.ToStr("N3") : mean.ToStr("N2");
+                    return IsNonBaselinesPrecise(summary, baseline, benchmarkCase) ? mean.ToStr(formatStyle, "N3") : mean.ToStr(formatStyle, "N2");
                 default:
                     throw new NotSupportedException();
             }

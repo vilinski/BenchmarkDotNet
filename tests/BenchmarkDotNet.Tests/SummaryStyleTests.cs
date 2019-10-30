@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Columns;
+﻿using System.Globalization;
+using System.Text;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Reports;
@@ -13,6 +15,7 @@ namespace BenchmarkDotNet.Tests
         {
             var summaryStyle = new SummaryStyle
             (
+                formatStyle: new FormatStyle(CultureInfo.InvariantCulture, Encoding.UTF7), 
                 printUnitsInHeader: true,
                 printUnitsInContent: false,
                 printZeroValuesInContent: true,
@@ -22,6 +25,8 @@ namespace BenchmarkDotNet.Tests
 
             var config = ManualConfig.CreateEmpty().With(summaryStyle);
 
+            Assert.Equal(CultureInfo.InvariantCulture, config.SummaryStyle.FormatStyle.CultureInfo);
+            Assert.Equal(Encoding.UTF7, config.SummaryStyle.FormatStyle.Encoding);
             Assert.True(config.SummaryStyle.PrintUnitsInHeader);
             Assert.False(config.SummaryStyle.PrintUnitsInContent);
             Assert.True(config.SummaryStyle.PrintZeroValuesInContent);

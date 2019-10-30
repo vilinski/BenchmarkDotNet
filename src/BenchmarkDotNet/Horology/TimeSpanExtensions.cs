@@ -1,4 +1,5 @@
 ﻿using System;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Extensions;
 
 namespace BenchmarkDotNet.Horology
@@ -17,11 +18,11 @@ namespace BenchmarkDotNet.Horology
         /// <example>TimeSpan.FromSeconds(2362) -> "00:39:22 (2362 sec)"</example>
         /// <param name="time"></param>
         /// <returns></returns>
-        public static string ToFormattedTotalTime(this TimeSpan time)
+        public static string ToFormattedTotalTime(this TimeSpan time, FormatStyle formatStyle)
         {
             long totalHours = time.Ticks / TimeSpan.TicksPerHour;
             string hhMmSs = $"{totalHours:00}:{time:mm\\:ss}";
-            string totalSecs = $"{time.TotalSeconds.ToStr()} sec";
+            string totalSecs = $"{time.TotalSeconds.ToStr(formatStyle)} sec";
             return $"{hhMmSs} ({totalSecs})";
         }
     }

@@ -28,7 +28,7 @@ namespace BenchmarkDotNet.Samples
     {
         private class Config : ManualConfig
         {
-            public Config() => Encoding = Encoding.Unicode;
+            public Config() => FormatStyle = new FormatStyle(Encoding.Unicode);
         }
 
         [Benchmark]

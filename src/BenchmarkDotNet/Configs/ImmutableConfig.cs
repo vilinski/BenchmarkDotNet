@@ -45,7 +45,7 @@ namespace BenchmarkDotNet.Configs
             ImmutableHashSet<Job> uniqueRunnableJobs,
             ConfigUnionRule unionRule,
             string artifactsPath,
-            Encoding encoding,
+            FormatStyle formatStyle,
             IOrderer orderer,
             SummaryStyle summaryStyle,
             ConfigOptions options)
@@ -62,7 +62,7 @@ namespace BenchmarkDotNet.Configs
             jobs = uniqueRunnableJobs;
             UnionRule = unionRule;
             ArtifactsPath = artifactsPath;
-            Encoding = encoding;
+            FormatStyle = formatStyle;
             Orderer = orderer;
             SummaryStyle = summaryStyle;
             Options = options;
@@ -70,7 +70,7 @@ namespace BenchmarkDotNet.Configs
 
         public ConfigUnionRule UnionRule { get; }
         public string ArtifactsPath { get; }
-        public Encoding Encoding { get; }
+        public FormatStyle FormatStyle { get; }
         public ConfigOptions Options { get; }
         [NotNull] public IOrderer Orderer { get; }
         public SummaryStyle SummaryStyle { get; }

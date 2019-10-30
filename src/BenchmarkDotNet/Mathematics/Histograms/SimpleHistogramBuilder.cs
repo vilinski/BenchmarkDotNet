@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Extensions;
 using JetBrains.Annotations;
 
@@ -19,7 +20,7 @@ namespace BenchmarkDotNet.Mathematics.Histograms
         public Histogram BuildWithFixedBinSize(IEnumerable<double> values, double binSize)
         {
                 if (binSize < 1e-9)
-                    throw new ArgumentException($"binSize ({binSize.ToStr()}) should be a positive number", nameof(binSize));
+                    throw new ArgumentException($"binSize ({binSize.ToStr(FormatStyle.DefaultStyle)}) should be a positive number", nameof(binSize));
 
                 var list = values.ToList();
                 if (list.IsEmpty())

@@ -50,12 +50,13 @@ namespace BenchmarkDotNet.Columns
             if (ratio == null)
                 return "NA";
 
+            var formatStyle = summary.Style.FormatStyle;
             switch (Metric)
             {
                 case RatioMetric.Mean:
-                    return IsNonBaselinesPrecise(summary, baseline, benchmarkCase) ? ratio.Mean.ToStr("N3") : ratio.Mean.ToStr("N2");
+                    return IsNonBaselinesPrecise(summary, baseline, benchmarkCase) ? ratio.Mean.ToStr(formatStyle, "N3") : ratio.Mean.ToStr(formatStyle, "N2");
                 case RatioMetric.StdDev:
-                    return ratio.StandardDeviation.ToStr("N2");
+                    return ratio.StandardDeviation.ToStr(formatStyle, "N2");
                 default:
                     throw new NotSupportedException();
             }

@@ -102,7 +102,7 @@ namespace BenchmarkDotNet.Toolchains.InProcess.Emit.Implementation
                 TargetJob = benchmarkCase.Job,
                 OperationsPerInvoke = benchmarkCase.Descriptor.OperationsPerInvoke,
                 MeasureExtraStats = benchmarkCase.Config.HasExtraStatsDiagnoser(),
-                Encoding = benchmarkCase.Config.Encoding,
+                Encoding = benchmarkCase.Config.FormatStyle.Encoding,
                 BenchmarkName = FullNameProvider.GetBenchmarkName(benchmarkCase)
             };
             return engineParameters;

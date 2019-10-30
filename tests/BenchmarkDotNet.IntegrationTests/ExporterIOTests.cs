@@ -127,6 +127,7 @@ namespace BenchmarkDotNet.IntegrationTests
                 resultsDirectoryPath: resultsDirectoryPath,
                 logFilePath: string.Empty,
                 totalTime: System.TimeSpan.Zero,
+                formatStyle: FormatStyle.DefaultStyle,
                 validationErrors: ImmutableArray<ValidationError>.Empty
             );
         }

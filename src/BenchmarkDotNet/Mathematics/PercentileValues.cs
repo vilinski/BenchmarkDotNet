@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Extensions;
 using BenchmarkDotNet.Horology;
 using JetBrains.Annotations;
@@ -76,11 +77,11 @@ namespace BenchmarkDotNet.Mathematics
             P100 = Percentile(100);
         }
 
-        public string ToStr() => $"[P95: {P95.ToStr()}] [P0: {P0.ToStr()}]; [P50: {P50.ToStr()}]; [P100: {P100.ToStr()}]";
-        [PublicAPI] public string ToTimeStr(TimeUnit unit = null, Encoding encoding = null)
+        public string ToStr() => $"[P95: {P95.ToStr(FormatStyle.DefaultStyle)}] [P0: {P0.ToStr(FormatStyle.DefaultStyle)}]; [P50: {P50.ToStr(FormatStyle.DefaultStyle)}]; [P100: {P100.ToStr(FormatStyle.DefaultStyle)}]";
+        [PublicAPI] public string ToTimeStr(TimeUnit unit = null, FormatStyle formatStyle = null)
         {
-            encoding = encoding ?? Encoding.ASCII;
-            return $"[P95: {P95.ToTimeStr(unit, encoding)}] [P0: {P0.ToTimeStr(unit, encoding)}]; [P50: {P50.ToTimeStr(unit, encoding)}]; [P100: {P100.ToTimeStr(unit, encoding)})]";
+            formatStyle = formatStyle ?? FormatStyle.DefaultStyle;
+            return $"[P95: {P95.ToTimeStr(unit, formatStyle)}] [P0: {P0.ToTimeStr(unit, formatStyle)}]; [P50: {P50.ToTimeStr(unit, formatStyle)}]; [P100: {P100.ToTimeStr(unit, formatStyle)})]";
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Helpers;
 using Xunit;
 
@@ -26,18 +27,18 @@ namespace BenchmarkDotNet.Tests
         [Fact]
         public void TestToString()
         {
-            var enc1 = Encoding.ASCII;
-            var enc2 = Encoding.Unicode;
+            var style1 = new FormatStyle(Encoding.ASCII);
+            var style2 = new FormatStyle(Encoding.Unicode);
 
             var mes = new MultiEncodingString("string", "otherString");
-            var otherMes = new MultiEncodingString(new[] { new KeyValuePair<Encoding, string>(enc1, "string"),
-                                                           new KeyValuePair<Encoding, string>(enc2, "otherString") });
+            var otherMes = new MultiEncodingString(new[] { new KeyValuePair<Encoding, string>(style1.Encoding, "string"),
+                                                           new KeyValuePair<Encoding, string>(style2.Encoding, "otherString") });
 
-            Assert.Equal("string", mes.ToString(enc1));
-            Assert.Equal("otherString", mes.ToString(enc2));
+            Assert.Equal("string", mes.ToString(style1));
+            Assert.Equal("otherString", mes.ToString(style2));
 
-            Assert.Equal("string", otherMes.ToString(enc1));
-            Assert.Equal("otherString", otherMes.ToString(enc2));
+            Assert.Equal("string", otherMes.ToString(style1));
+            Assert.Equal("otherString", otherMes.ToString(style2));
         }
     }
 }

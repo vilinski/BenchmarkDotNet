@@ -1,4 +1,5 @@
-﻿using BenchmarkDotNet.Extensions;
+﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Extensions;
 using Xunit;
 
 namespace BenchmarkDotNet.Tests
@@ -23,7 +24,7 @@ namespace BenchmarkDotNet.Tests
         [InlineData("1 TB", 1024L * 1024 * 1024 * 1024)]
         public void SizeUnitFormattingTest(string expected, long bytes)
         {
-            Assert.Equal(expected, bytes.ToSizeStr());
+            Assert.Equal(expected, bytes.ToSizeStr(FormatStyle.DefaultStyle));
         }
     }
 }

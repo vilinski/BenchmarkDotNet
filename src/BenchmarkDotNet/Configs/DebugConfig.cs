@@ -72,7 +72,7 @@ namespace BenchmarkDotNet.Configs
         public SummaryStyle SummaryStyle => SummaryStyle.Default;
         public ConfigUnionRule UnionRule => ConfigUnionRule.Union;
         public string ArtifactsPath => Path.Combine(Directory.GetCurrentDirectory(), "BenchmarkDotNet.Artifacts");
-        public Encoding Encoding => Encoding.ASCII;
+        public FormatStyle FormatStyle => null;
         public IEnumerable<BenchmarkLogicalGroupRule> GetLogicalGroupRules() => Array.Empty<BenchmarkLogicalGroupRule>();
 
         public ConfigOptions Options => ConfigOptions.KeepBenchmarkFiles | ConfigOptions.DisableOptimizationsValidator;

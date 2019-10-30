@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BenchmarkDotNet.Characteristics;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Portability;
@@ -29,7 +30,7 @@ namespace BenchmarkDotNet.Engines
         [PublicAPI] public Action IterationSetupAction { get; }
         [PublicAPI] public Action IterationCleanupAction { get; }
         [PublicAPI] public IResolver Resolver { get; }
-        [PublicAPI] public Encoding Encoding { get; }
+        [PublicAPI] public FormatStyle FormatStyle { get; }
         [PublicAPI] public string BenchmarkName { get; }
 
         private IClock Clock { get; }
@@ -68,7 +69,7 @@ namespace BenchmarkDotNet.Engines
             BenchmarkName = benchmarkName;
 
             Resolver = resolver;
-            Encoding = encoding;
+            FormatStyle = new FormatStyle(encoding);
 
             Clock = targetJob.ResolveValue(InfrastructureMode.ClockCharacteristic, Resolver);
             ForceAllocations = targetJob.ResolveValue(GcMode.ForceCharacteristic, Resolver);
@@ -137,7 +138,7 @@ namespace BenchmarkDotNet.Engines
 
             var outlierMode = TargetJob.ResolveValue(AccuracyMode.OutlierModeCharacteristic, Resolver);
 
-            return new RunResults(idle, main, outlierMode, workGcHasDone, threadingStats, Encoding);
+            return new RunResults(idle, main, outlierMode, workGcHasDone, threadingStats, FormatStyle);
         }
 
         public Measurement RunIteration(IterationData data)
@@ -171,7 +172,7 @@ namespace BenchmarkDotNet.Engines
             GcCollect();
 
             // Results
-            var measurement = new Measurement(0, data.IterationMode, data.IterationStage, data.Index, totalOperations, clockSpan.GetNanoseconds(), Encoding);
+            var measurement = new Measurement(0, data.IterationMode, data.IterationStage, data.Index, totalOperations, clockSpan.GetNanoseconds(), FormatStyle);
             WriteLine(measurement.ToOutputLine());
 
             return measurement;

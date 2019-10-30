@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Mathematics;
 using BenchmarkDotNet.Reports;
 using JetBrains.Annotations;
@@ -12,7 +13,7 @@ namespace BenchmarkDotNet.Engines
     public struct RunResults
     {
         private readonly OutlierMode outlierMode;
-        private readonly Encoding encoding;
+        private readonly FormatStyle formatStyle;
 
         [CanBeNull, PublicAPI]
         public IReadOnlyList<Measurement> Overhead { get; }
@@ -29,10 +30,10 @@ namespace BenchmarkDotNet.Engines
                           OutlierMode outlierMode,
                           GcStats gcStats,
                           ThreadingStats threadingStats,
-                          Encoding encoding)
+                          FormatStyle formatStyle)
         {
             this.outlierMode = outlierMode;
-            this.encoding = encoding;
+            this.formatStyle = formatStyle;
             Overhead = overhead;
             Workload = workload;
             GCStats = gcStats;
@@ -59,7 +60,7 @@ namespace BenchmarkDotNet.Engines
                     ++resultIndex,
                     measurement.Operations,
                     value,
-                    encoding);
+                    formatStyle);
             }
         }
 

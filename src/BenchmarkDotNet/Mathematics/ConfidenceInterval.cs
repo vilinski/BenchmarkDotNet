@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Extensions;
 using BenchmarkDotNet.Horology;
 using JetBrains.Annotations;
@@ -147,9 +148,9 @@ namespace BenchmarkDotNet.Mathematics
 
         private string GetLevelHint(bool showLevel = true) => showLevel ? $" (CI {Level.ToPercentStr()})" : "";
 
-        public string ToStr(bool showLevel = true) => $"[{Lower.ToStr()}; {Upper.ToStr()}]{GetLevelHint(showLevel)}";
+        public string ToStr([CanBeNull] FormatStyle formatStyle, bool showLevel = true) => $"[{Lower.ToStr(formatStyle)}; {Upper.ToStr(formatStyle)}]{GetLevelHint(showLevel)}";
 
-        public string ToTimeStr(Encoding encoding, TimeUnit unit = null, bool showLevel = true) =>
-            $"[{Lower.ToTimeStr(unit, encoding)}; {Upper.ToTimeStr(unit, encoding)}]{GetLevelHint(showLevel)}";
+        public string ToTimeStr(FormatStyle formatStyle, TimeUnit unit = null, bool showLevel = true) =>
+            $"[{Lower.ToTimeStr(unit, formatStyle)}; {Upper.ToTimeStr(unit, formatStyle)}]{GetLevelHint(showLevel)}";
     }
 }

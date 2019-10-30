@@ -64,7 +64,7 @@ namespace BenchmarkDotNet.Code
                     .Replace("$EngineFactoryType$", GetEngineFactoryTypeName(benchmark))
                     .Replace("$Ref$", provider.UseRefKeyword ? "ref" : null)
                     .Replace("$MeasureExtraStats$", buildInfo.Config.HasExtraStatsDiagnoser() ? "true" : "false")
-                    .Replace("$Encoding$", buildInfo.Config.Encoding.ToTemplateString())
+                    .Replace("$Encoding$", (buildInfo.Config.FormatStyle?.Encoding ?? FormatStyle.DefaultEncoding).ToTemplateString())
                     .Replace("$DisassemblerEntryMethodName$", DisassemblerConstants.DisassemblerEntryMethodName)
                     .Replace("$WorkloadMethodCall$", provider.GetWorkloadMethodCall(passArguments)).ToString();
 

@@ -44,7 +44,7 @@ namespace BenchmarkDotNet.Configs
         [PublicAPI] public ConfigOptions Options { get; set; }
         [PublicAPI] public ConfigUnionRule UnionRule { get; set; } = ConfigUnionRule.Union;
         [PublicAPI] public string ArtifactsPath { get; set; }
-        [PublicAPI] public Encoding Encoding { get; set; }
+        [PublicAPI] public FormatStyle FormatStyle { get; set; }
         [PublicAPI] public IOrderer Orderer { get; set; }
         [PublicAPI] public SummaryStyle SummaryStyle { get; set; }
 
@@ -95,7 +95,7 @@ namespace BenchmarkDotNet.Configs
             filters.AddRange(config.GetFilters());
             Orderer = config.Orderer ?? Orderer;
             ArtifactsPath = config.ArtifactsPath ?? ArtifactsPath;
-            Encoding = config.Encoding ?? Encoding;
+            FormatStyle = config.FormatStyle ?? FormatStyle;
             SummaryStyle = config.SummaryStyle ?? SummaryStyle;
             logicalGroupRules.AddRange(config.GetLogicalGroupRules());
             Options |= config.Options;

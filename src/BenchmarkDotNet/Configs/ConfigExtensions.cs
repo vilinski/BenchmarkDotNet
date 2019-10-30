@@ -29,7 +29,9 @@ namespace BenchmarkDotNet.Configs
         [PublicAPI] public static IConfig With(this IConfig config, IOrderer provider) => config.With(m => m.Orderer = provider);
         [PublicAPI] public static IConfig With(this IConfig config, params HardwareCounter[] counters) => config.With(c => c.Add(counters));
         [PublicAPI] public static IConfig With(this IConfig config, params IFilter[] filters) => config.With(c => c.Add(filters));
-        [PublicAPI] public static IConfig With(this IConfig config, Encoding encoding) => config.With(c => c.Encoding = encoding);
+        [Obsolete]
+        [PublicAPI] public static IConfig With(this IConfig config, Encoding encoding) => config.With(c => c.FormatStyle = new FormatStyle(config.FormatStyle?.CultureInfo ?? FormatStyle.DefaultCultureInfo, encoding));
+        [PublicAPI] public static IConfig With(this IConfig config, FormatStyle formatStyle) => config.With(c => c.FormatStyle = formatStyle);
         [PublicAPI] public static IConfig With(this IConfig config, SummaryStyle summaryStyle) => config.With(c => c.SummaryStyle = summaryStyle);
 
         /// <summary>

@@ -31,12 +31,13 @@ namespace BenchmarkDotNet.Columns
             if (!summary.HasReport(benchmarkCase) || !summary[benchmarkCase].Metrics.TryGetValue(descriptor.Id, out Metric metric) || (metric.Value == 0.0 && !style.PrintZeroValuesInContent))
                 return "-";
 
+            var formatStyle = summary.Style.FormatStyle;
             if (style.PrintUnitsInContent && descriptor.UnitType == UnitType.Size)
-                return ((long)metric.Value).ToSizeStr(style.SizeUnit, 1, style.PrintUnitsInContent);
+                return ((long)metric.Value).ToSizeStr(formatStyle, style.SizeUnit, 1, style.PrintUnitsInContent);
             if (style.PrintUnitsInContent && descriptor.UnitType == UnitType.Time)
                 return metric.Value.ToTimeStr(style.TimeUnit, 1, style.PrintUnitsInContent);
 
-            return metric.Value.ToStr(descriptor.NumberFormat);
+            return metric.Value.ToStr(formatStyle, descriptor.NumberFormat);
         }
 
         public override string ToString() => descriptor.DisplayName;

@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using BenchmarkDotNet.Characteristics;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;

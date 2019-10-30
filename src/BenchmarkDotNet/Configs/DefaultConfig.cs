@@ -71,7 +71,7 @@ namespace BenchmarkDotNet.Configs
 
         public ConfigUnionRule UnionRule => ConfigUnionRule.Union;
 
-        public Encoding Encoding => Encoding.ASCII;
+        public FormatStyle FormatStyle => null;
 
         public ConfigOptions Options => ConfigOptions.Default;
 

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Extensions;
 using BenchmarkDotNet.Mathematics;
 using BenchmarkDotNet.Mathematics.Histograms;
@@ -60,9 +61,9 @@ namespace BenchmarkDotNet.Tests.Mathematics.Histograms
         {
             var s = new Statistics(histogram.GetAllValues());
             double mValue = MathHelper.CalculateMValue(s);
-            output.WriteLine($"=== {title}:Short (BinSize={histogram.BinSize.ToTimeStr()}, mValue={mValue.ToStr()}) ===");
+            output.WriteLine($"=== {title}:Short (BinSize={histogram.BinSize.ToTimeStr()}, mValue={mValue.ToStr(FormatStyle.DefaultStyle)}) ===");
             output.WriteLine(histogram.ToTimeStr(format: "0.0000"));
-            output.WriteLine($"=== {title}:Full (BinSize={histogram.BinSize.ToTimeStr()}, mValue={mValue.ToStr()}) ===");
+            output.WriteLine($"=== {title}:Full (BinSize={histogram.BinSize.ToTimeStr()}, mValue={mValue.ToStr(FormatStyle.DefaultStyle)}) ===");
             output.WriteLine(histogram.ToTimeStr(full: true, format: "0.0000"));
             output.WriteLine("OUTLIERS: ", string.Join(", ", s.AllOutliers.Select(it => it.ToTimeStr())));
         }
